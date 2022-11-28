@@ -16,8 +16,7 @@ import {
   SceneLoader,
   DeviceOrientationCamera,
   Mesh,
-  Animation,
-  
+  Animation
 } from "@babylonjs/core";
 import "@babylonjs/inspector";
 
@@ -57,46 +56,47 @@ const light1 = new DirectionalLight(
 var points = [];
 var n = 450; // počet bodov
 var r = 50; // radius krivky
-for (var i=0; i<n+1; i++)
-{
+for (var i = 0; i < n + 1; i++) {
   points.push(
-                //console.log(r + (r/5) * Math.sin((8 * i * Math.PI)/n)) * Math.sin((2 * i))
-                new Vector3
-                (
-                  (r+(r/5)*Math.sin((8*i*Math.PI)/n))* Math.sin((2*i*Math.PI)/n), 0, 
-                  (r+(r/10)*Math.sin((6*i*Math.PI)/n))* Math.cos((2*i*Math.PI)/n) 
-                )
-             );
+    new Vector3(
+      (r + (r / 5) * Math.sin((8 * i * Math.PI) / n)) *
+        Math.sin((2 * i * Math.PI) / n),
+      0,
+      (r + (r / 10) * Math.sin((6 * i * Math.PI) / n)) *
+        Math.cos((2 * i * Math.PI) / n)
+    )
+  );
 }
 //vykreslení křivky
-var track = MeshBuilder.CreateLines("track",{ points });
-var freza = MeshBuilder.CreateCylinder("freza",{diameter:0.000001});
-SceneLoader.ImportMesh("","public/","endmill.glb",scene,function(
+
+var freza = MeshBuilder.CreateCylinder("freza", { diameter: 0.000001 });
+var track = MeshBuilder.CreateLines("11", { points });
+SceneLoader.ImportMesh("", "public/", "endmill.glb", scene, function (
   noveModely
-){
-freza = noveModely[0]
-freza.scaling = new Vector3(0.15,0.15,0.25)
-freza.position.y=points[i].y;
-freza.rotate(new Vector3(1,0,0), Math.PI/2)
+) {
+  freza = noveModely[0];
+  freza.scaling = new Vector3(0.15, 0.15, 0.25);
+  freza.position.y = points[i].y;
+  freza.rotate(new Vector3(1, 0, 0), Math.PI / 2);
 });
 //úhly a rotace
 var path3D = new Path3D(points);
 var normals = path3D.getNormals();
-var theta = Math.acos(Vector3.Dot(Axis.Z,normals[0]));
-freza.rotate(axis.X,theta, Space.WORLD);
-
+var theta = Math.acos(Vector3.Dot(Axis.Z, normals[0]));
+freza.rotate(Axis.X, theta, Space.WORLD);
 
 //animace
 var i = 0;
-scene.registerAfterRender(function(){
-  freza.position.x=points[i].x;
-  freza.position.z=points[i].z;
-  theta=Math.acos(Vector3.Dot(normals[0]), normals[i+1]);
-  var sklopeni = Vector3.Cross(normals[i],normals[i+1]).y
-  sklopeni=sklopeni/Math.abs(sklopeni);
-  freza.rotate(axis.Y,sklopeni*theta, Space.WORLD);
-  
-  i = (i+1) % (n-1)
+scene.registerAfterRender(function () {
+  freza.position.x = points[i].X;
+  freza.position.z = points[i].Z;
+  theta = Math.acos(Vector3.Dot(normals[0], normals[i + 1]));
+  var sklopeni = Vector3.Cross(normals[i], normals[i + 1]).y;
+  sklopeni = sklopeni / Math.abs(sklopeni);
+  freza.rotate(Axis.Y, sklopeni * theta, Space.WORLD);
+
+  i = (i + 1) % (n - 1);
+});
 // povinné vykreslování
 engine.runRenderLoop(function () {
   scene.render();
@@ -104,5 +104,3 @@ engine.runRenderLoop(function () {
 const environment1 = scene.createDefaultEnvironment({
   enableGroundShadow: true
 });
-// zde uděláme VR prostředí
-//scene.debugLayer.show();
