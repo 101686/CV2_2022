@@ -76,12 +76,27 @@ var freza2 = MeshBuilder.CreateCylinder("freza", { diameter: 2, height: 6 });
 
 var path3D = new Path3D(points);
 var normals = path3D.getNormals();
-SceneLoader.ImportMesh("", "public/", "endmill.glb", scene, function (
+SceneLoader.ImportMesh("", "public/", "cargo_ship.glb", scene, function (
   noveModely
 ) {
   freza = noveModely[0];
-  freza.scaling = new Vector3(0.75, 0.75, 0.75);
+  freza.scaling = new Vector3(30, 30, 30);
+  freza.rotation = new Vector3(0, 0, 0);
+  freza._positions = new Vector3(0, 10, 0);
 });
+
+SceneLoader.ImportMesh(
+  "",
+  "public/",
+  "low-polly_lighthouse.glb",
+  scene,
+  function (noveModely) {
+    // get the first mesh from the imported model
+    const mesh = noveModely[0];
+    mesh.position = new Vector3(0, 0, 0); // set position to the center of the scene
+    mesh.scaling = new Vector3(5, 5, 5);
+  }
+);
 //úhly a rotace
 
 //animace
