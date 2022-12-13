@@ -35,7 +35,7 @@ var scene = new Scene(engine);
 //vytoření kamery v pozici -5 (dozadu)
 const camera = new DeviceOrientationCamera(
   "kamera",
-  new Vector3(-100, 40, 17),
+  new Vector3(-150, 50, 17),
   scene
 );
 
@@ -71,29 +71,36 @@ for (var i = 0; i < n + 1; i++) {
 }
 //vykreslení křivky
 var track = MeshBuilder.CreateLines("track", { points });
-var freza = MeshBuilder.CreateCylinder("freza", { diameter: 0.00001 });
-var freza2 = MeshBuilder.CreateCylinder("freza", { diameter: 2, height: 6 });
+var octanus = MeshBuilder.CreateCylinder("octanus", { diameter: 0.00001 });
 
 var path3D = new Path3D(points);
 var normals = path3D.getNormals();
-SceneLoader.ImportMesh("", "public/", "endmill.glb", scene, function (
+SceneLoader.ImportMesh("", "public/", "Octanus.glb", scene, function (
   noveModely
 ) {
-  freza = noveModely[0];
-  freza.scaling = new Vector3(0.75, 0.75, 0.75);
+  octanus = noveModely[0];
+  octanus.scaling = new Vector3(0.1, 0.1, 0.1);
+  octanus.rotation = new Vector3(-1.8, 0, 0);
+});
+SceneLoader.ImportMesh("", "public/", "Flag.glb", scene, function (newMeshes) {
+  // get the first mesh from the imported model
+  const flag = newMeshes[0];
+  flag.position = new Vector3(0, 0, 0); // set position to the center of the scene
+  flag.scaling = new Vector3(0.1, 0.1, 0.1);
+  flag.rotation = new Vector3(-1.6, 1, 0);
 });
 //úhly a rotace
 
 //animace
 var i = 0;
 scene.registerAfterRender(function () {
-  freza.position.x = points[i].x;
-  freza.position.z = points[i].z;
+  octanus.position.x = points[i].x;
+  octanus.position.z = points[i].z;
 
   var theta = Math.acos(Vector3.Dot(normals[i], normals[i + 1]));
   var sklopeni = Vector3.Cross(normals[i], normals[i + 1]).y;
   sklopeni = sklopeni / Math.abs(sklopeni);
-  freza.rotate(Axis.Y, sklopeni * theta, Space.WORLD);
+  octanus.rotate(Axis.Y, sklopeni * theta, Space.WORLD);
   i = (i + 1) % (n - 1);
 });
 
